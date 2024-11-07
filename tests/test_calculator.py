@@ -208,3 +208,9 @@ def test_divide_by_zero(monkeypatch):
     inputs = ["divide 10 0", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Division by zero is not allowed." in output
+
+def test_help(monkeypatch):
+    """Test the help feature"""
+    inputs = ["help", 'exit']
+    output = run_calculator_with_input(monkeypatch, inputs)
+    assert "History Features: undo, clear, history. Math Functions: add, subtract, multiply, divide." in output

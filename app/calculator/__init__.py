@@ -10,7 +10,7 @@ def calculator(inputs=None):
     
     print("Welcome to the Calculator!")
     print("Available operations: add, subtract, multiply, divide")
-    print("Available commands: history, clear, undo, exit")
+    print("Available commands: history, clear, undo, help, exit")
     print("Format is <operation> <number1>> <number2>")
 
     while True:
@@ -32,6 +32,8 @@ def calculator(inputs=None):
             history.undo_last()
             print("Last calculation undone.")
             continue
+        elif user_input == "help":
+            print("History Features: undo, clear, history. Math Functions: add, subtract, multiply, divide.")
         else:
             try:
                 operation, num1, num2 = user_input.split()
