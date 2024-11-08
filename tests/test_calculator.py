@@ -51,12 +51,35 @@ def test_division(monkeypatch):
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Result: 5.0" in output
 
+def test_exponent(monkeypatch):
+    """Test addition operation in REPL."""
+    inputs = ["exponent 2 3", "exit"]
+    output = run_calculator_with_input(monkeypatch, inputs)
+    assert "Result: 8.0" in output
+
+
+
+def test_modulus(monkeypatch):
+    """Test addition operation in REPL."""
+    inputs = ["modulus 5 2", "exit"]
+    output = run_calculator_with_input(monkeypatch, inputs)
+    assert "Result: 1.0" in output
 # Additional Tests
 def test_divide_by_zero(monkeypatch):
     """Test division by zero error handling."""
     inputs = ["divide 10 0", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Division by zero is not allowed." in output
+
+def test_exponent_negative(monkeypatch):
+    inputs = ["exponent 2 -3", "exit"]
+    output = run_calculator_with_input(monkeypatch, inputs)
+    assert "Result: 0.125" in output
+
+def test_exponent_negative(monkeypatch):
+    inputs = ["exponent -2 3", "exit"]
+    output = run_calculator_with_input(monkeypatch, inputs)
+    assert "Result: -8.0" in output
 
 def test_invalid_command_similar_to_valid(monkeypatch):
     """Test invalid command similar to a valid one."""

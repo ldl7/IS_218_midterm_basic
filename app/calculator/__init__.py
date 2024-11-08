@@ -4,6 +4,8 @@ from app.operations import addition
 from app.operations import subtraction
 from app.operations import multiplication
 from app.operations import division
+from app.operations import exponent
+from app.operations import modulus
 from app.history import History
 
 
@@ -80,6 +82,10 @@ def calculator(inputs=None):
                 result = subtraction(num1, num2)
             elif operation == "multiply":
                 result = multiplication(num1, num2)
+            elif operation == "exponent":
+                result = exponent(num1, num2)
+            elif operation == "modulus":
+                result = modulus(num1, num2)
             elif operation == "divide":
                 try:
                     result = division(num1, num2)
