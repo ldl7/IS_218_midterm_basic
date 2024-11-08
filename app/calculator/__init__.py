@@ -1,45 +1,77 @@
-from app.operations import addition 
+# calculator.py
+
+from app.operations import addition
 from app.operations import subtraction
-from app.operations import  multiplication
+from app.operations import multiplication
 from app.operations import division
 from app.history import History
 
-def calculator(inputs=None):
 
-    history = History()
+def calculator(inputs=None):
+    """
+    Interactive calculator that supports basic arithmetic operations
+    and manages calculation history with save and load functionalities.
     
+    :param inputs: Optional parameter for automated inputs (not used in this implementation).
+    """
+    
+    history = History()
+    history_file = 'history.csv'
+
     print("Welcome to the Calculator!")
     print("Available operations: add, subtract, multiply, divide")
-    print("Available commands: history, clear, undo, help, exit")
-    print("Format is <operation> <number1>> <number2>")
+    print("Available commands: history, clear, undo, save, load, help, save, load, exit")
+    print("Format is <operation> <number1> <number2>")
 
     while True:
-        user_input = input("Enter an operation (add, subtract, multiply, divide) and two numbers, or a command: ")
+        user_input = input("Enter an operation (add, subtract, multiply, divide) and two numbers, or a command: ").strip()
 
-        if user_input.lower() == "exit":
+        if not user_input:
+            print("No input detected. Please enter a valid command or operation.")
+            continue
+
+        command = user_input.lower()
+
+        if command == "exit":
             print("Exiting calculator...")
             break
-        elif user_input.lower() == "history":
+        elif command == "history":
             print("Calculation History:")
             for calc in history.get_history():
                 print(calc)
             continue
-        elif user_input.lower() == "clear":
+        elif command == "clear":
             history.clear_history()
             print("History Cleared.")
             continue
-        elif user_input.lower() == "undo":
+        elif command == "undo":
             history.undo_last()
             print("Last calculation undone.")
             continue
-        elif user_input == "help":
-            print("History Features: undo, clear, history. Math Functions: add, subtract, multiply, divide.")
+        elif command == "save":
+            history.save(history_file)
+            continue
+        elif command == "load":
+            try:
+                history.load(history_file)
+                print("History successfully loaded.")
+                print()
+                continue
+            except FileNotFoundError:
+                print(f"File was not found.")
+
+        elif command == "help":
+            print("History Features: undo, clear, history, save, load.")
+            print("Math Functions: add, subtract, multiply, divide.")
+            continue
         else:
             try:
                 operation, num1, num2 = user_input.split()
-                num1, num2 = float(num1), float(num2)
+                num1 = float(num1)
+                num2 = float(num2)
             except ValueError:
-                print("Invalid input. Please follow the format: <operation> <num1> <num2>. Supported operations: add, subtract, multiply, divide.")
+                print("Invalid input. Please follow the format: <operation> <num1> <num2>.")
+                print("Supported operations: add, subtract, multiply, divide, help.")
                 continue
 
             if operation == "add":
@@ -55,20 +87,20 @@ def calculator(inputs=None):
                     print(e)
                     continue
             else:
-                print(f"Unknown operation. Supported operations: add, subtract, multiply, divide.")
+                print(f"Unknown operation. Supported operations: add, subtract, multiply, divide, help.")
                 continue
 
             calculation_str = f"{operation} {num1} {num2} = {result}"
             history.add_calculation(calculation_str)
-
             print(f"Result: {result}")
 
 
-        def main():
-            """
-            Main loop of the calculator application for interactive use.
-            """
-            calculator()
+def main():
+    """
+    Main loop of the calculator application for interactive use.
+    """
+    calculator()
 
-        if __name__ == "__main__":
-            main()
+
+if __name__ == "__main__":
+    main()
