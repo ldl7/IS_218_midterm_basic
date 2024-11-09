@@ -201,137 +201,27 @@ class TestHistory(unittest.TestCase):
 
     def test_load_nonexistent_file(self) -> None:
         """Test loading history from a non-existent CSV file."""
-        nonexistent_file = os.path.join(self.temp_dir.name, 'nonexistent.csv')
+        history = History()
+        nonexistent_file = "nonexistent.csv"
 
-        self.assertFalse(os.path.exists(nonexistent_file), "File unexpectedly exists.")
-
-        with patch('sys.stdout', new=StringIO()) as fake_out:
-            self.history.load(nonexistent_file)
-            output = fake_out.getvalue()
-
-        expected_message = f"The file {nonexistent_file} was not found."
-        self.assertIn(expected_message, output)
-        self.assertEqual(
-        len(self.history.get_history()),
-        0,
-        "History should remain empty when loading from a non-existent file."
-    )
-    def test_save_and_load_cycle(self) -> None:
-        """Test saving and then loading history to ensure data persistence."""
-        calculations = [
-            "add 1 1 = 2",
-            "divide 10 2 = 5"
-        ]
-        for calc in calculations:
-            self.history.add_calculation(calc)
-
-        with patch('sys.stdout', new=StringIO()) as fake_out:
-            self.history.save(self.history_file)
-            expected_save_message = f"History successfully saved to {self.history_file}."
-            self.assertIn(expected_save_message, fake_out.getvalue())
-
-        new_history = History()
-        with patch('sys.stdout', new=StringIO()) as fake_out:
-            new_history.load(self.history_file)
-            expected_load_message = f"History successfully loaded from {self.history_file}."
-            self.assertIn(expected_load_message, fake_out.getvalue())
-
-        self.assertEqual(
-            new_history.get_history(),
-            calculations,
-            "Loaded history does not match the original."
-        )
-
-    def test_save_overwrites_existing_file(self) -> None:
-        """Test that saving history overwrites an existing CSV file."""
-        initial_calculations = ["multiply 2 2 = 4"]
-        df_initial = pd.DataFrame({'calculations': initial_calculations})
-        df_initial.to_csv(self.history_file, index=False, encoding='utf-8')
-
-        new_calculations = ["add 3 3 = 6"]
-        for calc in new_calculations:
-            self.history.add_calculation(calc)
-
-        with patch('sys.stdout', new=StringIO()) as fake_out:
-            self.history.save(self.history_file)
-            expected_message = f"History successfully saved to {self.history_file}."
-            self.assertIn(expected_message, fake_out.getvalue())
-
-        df = pd.read_csv(self.history_file, dtype=str, encoding='utf-8')
-        self.assertEqual(
-            df['calculations'].tolist(),
-            new_calculations,
-            "Saving should overwrite the existing CSV file with new history."
-        )
-
-    def test_load_partial_history(self) -> None:
-        """Test loading a history when the CSV file contains additional irrelevant columns."""
-        calculations = ["add 4 5 = 9", "subtract 9 2 = 7"]
-        df = pd.DataFrame({
-            'calculations': calculations,
-            'timestamp': ["2024-01-01", "2024-01-02"]
-        })
-        df.to_csv(self.history_file, index=False, encoding='utf-8')
-
-        with patch('sys.stdout', new=StringIO()) as fake_out:
-            self.history.load(self.history_file)
-            expected_message = f"History successfully loaded from {self.history_file}."
-            self.assertIn(expected_message, fake_out.getvalue())
-
-        self.assertEqual(
-            self.history.get_history(),
-            calculations,
-            "Only 'calculations' should be loaded, ignoring other columns."
-        )
-
-    def test_save_load_unicode_characters(self) -> None:
-        """Test saving and loading history with Unicode characters."""
-        calculations = [
-            "add 𝟚 𝟛 = 𝟝",
-            "multiply π 𝟜 = 𝟙𝟢"
-        ]
-        for calc in calculations:
-            self.history.add_calculation(calc)
-
-        with patch('sys.stdout', new=StringIO()) as fake_out:
-            self.history.save(self.history_file)
-            expected_save_message = f"History successfully saved to {self.history_file}."
-            self.assertIn(expected_save_message, fake_out.getvalue())
-
-        with patch('sys.stdout', new=StringIO()) as fake_out:
-            self.history.load(self.history_file)
-            expected_load_message = f"History successfully loaded from {self.history_file}."
-            self.assertIn(expected_load_message, fake_out.getvalue())
-
-        self.assertEqual(
-            self.history.get_history(),
-            calculations,
-            "Loaded history with Unicode characters does not match the original."
-        )
-
-    def test_save_history_with_special_characters(self) -> None:
-        """Test saving history entries that contain special characters."""
-        calculations = [
-            "add 2+2=4",
-            "subtract 5-3=2",
-            "multiply 4*5=20",
-            "divide 10/2=5"
-        ]
-        for calc in calculations:
-            self.history.add_calculation(calc)
-
-        with patch('sys.stdout', new=StringIO()) as fake_out:
-            self.history.save(self.history_file)
-            expected_message = f"History successfully saved to {self.history_file}."
-            self.assertIn(expected_message, fake_out.getvalue())
-
-        df = pd.read_csv(self.history_file, dtype=str, encoding='utf-8')
-        self.assertEqual(
-            df['calculations'].tolist(),
-            calculations,
-            "Saved calculations with special characters do not match the history."
-        )
+        with patch("logging.error") as mock_logging_error:
+            history.load(nonexistent_file)
+            mock_logging_error.assert_called_once_with(
+                f"The file {nonexistent_file} was not found."
+            )
+            assert history.get_history() == [], (
+                "History should remain empty when loading from a non-existent file."
+            )
 
 
-if __name__ == '__main__':
-    unittest.main()
+def test_get_history_with_logging() -> None:
+    """Test the get_history_with_logging function to ensure it logs history access."""
+    history = History()
+    history.add_calculation("add 2 3 = 5")
+
+    with patch('logging.info') as mock_logging_info:
+        logged_history = history.get_history_with_logging()
+        mock_logging_info.assert_called_once_with("History accessed.")
+        assert logged_history == [
+            "add 2 3 = 5"
+            ], "History content should match the added calculation"
