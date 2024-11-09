@@ -4,38 +4,6 @@
 Calculator Program
 This project is a Python-based calculator application designed to perform a variety of arithmetic and mathematical operations, including addition, subtraction, multiplication, division, modulus, and exponentiation. The project also incorporates logging, testing, and coverage analysis, making it suitable for production-level use and integration with CI/CD pipelines.
 
-Project Structure
-
-PYTHON_CALC
-├── app
-│   └── calculator
-│       ├── __init__.py
-│       ├── history
-│       │   ├── __init__.py
-│       │   └── operations
-│       │       └── __init__.py
-├── htmlcov
-├── tests
-│   ├── __init__.py
-│   ├── conftest.py
-│   ├── test_calculator_logging.py
-│   ├── test_calculator.py
-│   ├── test_history.py
-│   └── test_operations.py
-├── venv
-├── .coverage
-├── .coveragerc
-├── .env
-├── .gitignore
-├── calculator.log
-├── history.csv
-├── main.py
-├── pytest.ini
-├── README.md
-└── requirements.txt
-
-
-
 file purposes:
 main.py: The main entry point for running calculator operations. This script interacts with operation modules and handles input/output.
 Operation Modules: Separate files for each operation:
