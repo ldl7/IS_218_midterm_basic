@@ -4,6 +4,8 @@
 Calculator Program
 This project is a Python-based calculator application designed to perform a variety of arithmetic and mathematical operations, including addition, subtraction, multiplication, division, modulus, and exponentiation. The project also incorporates logging, testing, and coverage analysis, making it suitable for production-level use and integration with CI/CD pipelines.
 
+youtube linK: https://youtu.be/JT4eadXY_LY 
+
 file purposes:
 main.py: The main entry point for running calculator operations. This script interacts with operation modules and handles input/output.
 Operation Modules: Separate files for each operation:
