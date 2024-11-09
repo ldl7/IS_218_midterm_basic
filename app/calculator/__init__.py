@@ -3,10 +3,14 @@
 import logging
 from app.operations import addition, subtraction, multiplication, division, exponent, modulus
 from app.history import History
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(
-    filename='calculator.log',
+    filename=os.getenv("LOG_FILE", "default.log"),
     filemode='a',
     format='%(asctime)s - %(levelname)s - %(message)s',
     level=logging.INFO
