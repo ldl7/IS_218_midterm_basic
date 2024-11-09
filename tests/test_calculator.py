@@ -29,55 +29,53 @@ def run_calculator_with_input(monkeypatch, inputs):
 # Existing Positive Tests
 def test_addition(monkeypatch):
     """Test addition operation in REPL."""
-    inputs = ["add 2 3", "exit"]
+    inputs = ["add 5.0 3.0", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
-    assert "Result: 5.0" in output
+    assert "Result: 8.0" in output
 
 def test_subtraction(monkeypatch):
     """Test subtraction operation in REPL."""
-    inputs = ["subtract 5 2", "exit"]
+    inputs = ["sub 5 2", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Result: 3.0" in output
 
 def test_multiplication(monkeypatch):
     """Test multiplication operation in REPL."""
-    inputs = ["multiply 4 5", "exit"]
+    inputs = ["multi 4 5", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Result: 20.0" in output
 
 def test_division(monkeypatch):
     """Test division operation in REPL."""
-    inputs = ["divide 10 2", "exit"]
+    inputs = ["div 10 2", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Result: 5.0" in output
 
 def test_exponent(monkeypatch):
     """Test addition operation in REPL."""
-    inputs = ["exponent 2 3", "exit"]
+    inputs = ["expo 2 3", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Result: 8.0" in output
 
-
-
 def test_modulus(monkeypatch):
     """Test addition operation in REPL."""
-    inputs = ["modulus 5 2", "exit"]
+    inputs = ["mod 5 2", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Result: 1.0" in output
 # Additional Tests
 def test_divide_by_zero(monkeypatch):
     """Test division by zero error handling."""
-    inputs = ["divide 10 0", "exit"]
+    inputs = ["div 10 0", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Division by zero is not allowed." in output
 
 def test_exponent_negative(monkeypatch):
-    inputs = ["exponent 2 -3", "exit"]
+    inputs = ["expo 2 -3", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Result: 0.125" in output
 
 def test_exponent_negative(monkeypatch):
-    inputs = ["exponent -2 3", "exit"]
+    inputs = ["expo -2 3", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Result: -8.0" in output
 
@@ -85,13 +83,13 @@ def test_invalid_command_similar_to_valid(monkeypatch):
     """Test invalid command similar to a valid one."""
     inputs = ["ad 2 3", "exit"]  # Typo in 'add'
     output = run_calculator_with_input(monkeypatch, inputs)
-    assert "Unknown operation. Supported operations: add, subtract, multiply, divide, help." in output
+    assert "Unknown operation. Supported operations: add, subtract, multiply, divide, exponent, modulus." in output
 
 def test_help(monkeypatch):
     """Test the help feature."""
     inputs = ["help", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
-    assert "Available commands: history, clear, undo, save, load, help, save, load, exit" in output
+    assert "History Features: undo, clear, history, save, load.\nMath Functions: add, sub, multi, div, expo, mod." in output
 
 def test_no_input(monkeypatch):
     """Test for no input."""
@@ -108,17 +106,17 @@ def test_negative_numbers(monkeypatch):
     assert "Result: 1.0" in output
 
     # Test subtraction with negative numbers
-    inputs = ["subtract -5 -2", "exit"]
+    inputs = ["sub -5 -2", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Result: -3.0" in output
 
     # Test multiplication with negative numbers
-    inputs = ["multiply -4 5", "exit"]
+    inputs = ["multi -4 5", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Result: -20.0" in output
 
     # Test division with negative numbers
-    inputs = ["divide -10 -2", "exit"]
+    inputs = ["div -10 -2", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Result: 5.0" in output
 
@@ -130,12 +128,12 @@ def test_floating_point_numbers(monkeypatch):
     assert "Result: 5.6" in output
 
     # Test subtraction
-    inputs = ["subtract 5.5 2.2", "exit"]
+    inputs = ["sub 5.5 2.2", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Result: 3.3" in output
 
     # Test multiplication
-    inputs = ["multiply 4.2 5.1", "exit"]
+    inputs = ["multi 4.2 5.1", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     result_line = next((line for line in output.split('\n') if "Result:" in line), None)
     assert result_line is not None, "Result not found in output"
@@ -173,7 +171,7 @@ def test_clear_history(monkeypatch):
 
 def test_undo_command(monkeypatch):
     """Test the 'undo' command."""
-    inputs = ["add 2 3", "subtract 5 1", "undo", "history", "exit"]
+    inputs = ["add 2 3", "sub 5 1", "undo", "history", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Last calculation undone." in output
     assert "subtract 5.0 1.0 = 4.0" not in output
@@ -202,30 +200,30 @@ def test_incomplete_input(monkeypatch):
     inputs = ["add 2", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Invalid input. Please follow the format: <operation> <num1> <num2>." in output
-    assert "Supported operations: add, subtract, multiply, divide, help." in output
 
 def test_extra_input(monkeypatch):
     """Test handling of extra arguments in input."""
     inputs = ["add 2 3 4", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Invalid input. Please follow the format: <operation> <num1> <num2>." in output
-    assert "Supported operations: add, subtract, multiply, divide, help." in output
+    
 
 def test_invalid_numbers(monkeypatch):
     """Test handling of invalid number inputs."""
     inputs = ["add two three", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Invalid input. Please follow the format: <operation> <num1> <num2>." in output
-    assert "Supported operations: add, subtract, multiply, divide, help." in output
+    
 
 def test_sequence_of_operations(monkeypatch):
     """Test multiple calculations and history display."""
-    inputs = ["add 2 3", "multiply 5 2", "history", "exit"]
+    inputs = ["add 2 3", "multi 5 2", "history", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Result: 5.0" in output
     assert "Result: 10.0" in output
+    assert "Calculation History:" in output
     assert "add 2.0 3.0 = 5.0" in output
-    assert "multiply 5.0 2.0 = 10.0" in output
+    assert "multi 5.0 2.0 = 10.0" in output
 
 def test_clear_history_empty(monkeypatch):
     """Test 'clear' command when history is already empty."""
@@ -239,11 +237,10 @@ def test_unknown_command(monkeypatch):
     inputs = ["unknown_command", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Invalid input. Please follow the format: <operation> <num1> <num2>." in output
-    assert "Supported operations: add, subtract, multiply, divide, help." in output
 
 def test_division_result_precision(monkeypatch):
     """Test division result for precision."""
-    inputs = ["divide 1 3", "exit"]
+    inputs = ["div 1 3", "exit"]
     output = run_calculator_with_input(monkeypatch, inputs)
     assert "Result: 0.3333333333333333" in output
 

@@ -1,5 +1,5 @@
 # app/history/__init__.py
-
+import logging
 import pandas as pd
 
 class History:
@@ -62,9 +62,17 @@ class History:
             df = pd.read_csv(file_path)
             if 'calculations' in df.columns:
                 self.history = df['calculations'].dropna().tolist()
-                print(f"History successfully loaded from {file_path}.")
+                logging.info("History successfully loaded.")
+                print(f" History successfully loaded from {file_path}.")
             
         except FileNotFoundError:
             print(f"The file {file_path} was not found.")
         except pd.errors.EmptyDataError:
             print(f"The file {file_path} is empty.")
+
+    def get_history_with_logging(self):
+        """
+        Retrieve history with logging for access tracking.
+        """
+        logging.info("History accessed.")
+        return self.get_history()
